@@ -18,15 +18,19 @@ Route::post('webhook', function (Request $request) {
         $inserted = DB::table('datas')->create(['webhookdata' => json_encode($data)]);
         $da = json_decode($inserted->webhookdata);
         $groups = Group::where('is_cust', true)->pluck('identifier')->toArray();
+        logs()->info($da->from);
+        logs()->info($da->body);
         if (in_array($da->from, $groups)) {
             $exist = Contact::where('identifier', $da->author)->first();
             if (!$exist) {
-                Contact::create(['name' => $da->_data->notifyName, 'identifier' => $da->author]);
+                $exist = Contact::create(['name' => $da->_data->notifyName, 'identifier' => $da->author]);
             }
+            logs()->info('Pengirim:' . $exist->name);
             $sw[] = $da;
             $contact = Contact::where('identifier', $da->author)->first()->id;
             $group = Group::where('identifier', $da->from)->first()->id;
             $exist = Message::where('identifier', $da->id->id)->first();
+            logs()->info('Message ID:' . $da->id->id);
             if (!$exist) {
                 Message::create([
                     'group_id' => $group,
