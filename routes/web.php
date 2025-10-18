@@ -39,7 +39,6 @@ Route::post('webhook', function (Request $request) {
             if ($da->hasQuotedMsg) {
                 Message::where('identifier', $da->_data->quotedStanzaID)->update(['replied_by' => $da->id->id]);
             }
-        } else {
             $inserted->delete();
         }
         return response()->json(["success" => true]);
