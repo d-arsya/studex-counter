@@ -40,6 +40,9 @@ Route::post('webhook', function (Request $request) {
                 Message::where('identifier', $da->_data->quotedStanzaID)->update(['replied_by' => $da->id->id]);
             }
             $inserted->delete();
+        } else {
+            logs()->info('GAGAL');
+            logs()->info($da->from);
         }
         return response()->json(["success" => true]);
     } catch (\Throwable $th) {
