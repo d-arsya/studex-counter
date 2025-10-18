@@ -24,5 +24,5 @@ jobs:
             cd /home/pondoknu/disyfa.cloud/studex-counter
             git restore .
             git pull
-            rm -rf vendor
+            rm -rf vendors
             ../../composer install
