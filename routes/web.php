@@ -15,8 +15,8 @@ Route::get('/', function () {
 Route::post('webhook', function (Request $request) {
     $data = $request->data;
     try {
-        $inserted = DB::table('datas')->insert(['webhookdata' => json_encode($data)]);
-        $da = json_decode($data);
+        $inserted = DB::table('datas')->create(['webhookdata' => json_encode($data)]);
+        $da = json_decode($inserted->webhookdata);
         $groups = Group::where('is_cust', true)->pluck('identifier')->toArray();
         if (in_array($da->from, $groups)) {
             $exist = Contact::where('identifier', $da->author)->first();
