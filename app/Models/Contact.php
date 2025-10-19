@@ -8,4 +8,5 @@ class Contact extends Model
 {
     protected $table = 'contacts';
     protected $guarded = [];
+    protected $casts = ['is_admin' => 'boolean'];
 }

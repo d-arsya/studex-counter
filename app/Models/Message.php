@@ -8,6 +8,7 @@ class Message extends Model
 {
     protected $table = 'messages';
     protected $guarded = [];
+    protected $casts = ['is_delivery' => 'boolean'];
 
     public function contact()
     {

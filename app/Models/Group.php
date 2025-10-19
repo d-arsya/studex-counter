@@ -8,4 +8,5 @@ class Group extends Model
 {
     protected $table = 'groups';
     protected $guarded = [];
+    protected $casts = ['is_cust' => 'boolean'];
 }
