@@ -50,7 +50,8 @@ class DecodeData extends Command
                         'contact_id' => $contact,
                         'text' => $da->body,
                         'time' => Carbon::createFromTimestamp($da->timestamp)->addHours(7),
-                        'identifier' => $da->id->id
+                        'identifier' => $da->id->id,
+                        'is_delivery' => str_contains(strtolower($da->body), 'jastip')
                     ]);
                 }
                 if ($da->hasQuotedMsg) {

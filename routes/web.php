@@ -22,4 +22,5 @@ Route::withoutMiddleware(VerifyCsrfToken::class)->group(function () {
         }
     });
     Route::get('today', [MessageController::class, 'today']);
+    Route::get('weekly', [MessageController::class, 'weekly']);
 });
