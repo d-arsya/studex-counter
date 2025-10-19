@@ -54,7 +54,10 @@ class DecodeData extends Command
                     ]);
                 }
                 if ($da->hasQuotedMsg) {
-                    Message::where('identifier', $da->_data->quotedStanzaID)->update(['replied_by' => $da->id->id]);
+                    $quoted = Message::where('identifier', $da->_data->quotedStanzaID)->first();
+                    if ($quoted->replied_by == null && strlen($da->body) < 6 && !str_contains(strtolower($da->body), 'm')) {
+                        $quoted->update(['replied_by' => $da->id->id]);
+                    }
                 }
             }
         }
