@@ -82,8 +82,11 @@ class DecodeData extends Command
 
     private function createMessage($da)
     {
-        $contact = Contact::where('identifier', $da->_data->quotedParticipant)->first()->id;
-
+        $contact = Contact::where('identifier', $da->_data->quotedParticipant)->first();
+        if (!$contact) {
+            $contact = Contact::create(['name' => 'no name', 'identifier' => $da->_data->quotedParticipant]);
+        }
+        $contact = $contact->id;
         $group = Group::where('identifier', $da->from)->first()->id;
         $data = Message::create([
             'group_id' => $group,
