@@ -67,7 +67,7 @@ class DecodeData extends Command
                     if ($success) {
                         $success = false;
                     }
-                    logs()->error(json_encode($th));
+                    logs()->error($th->getLine());
                     logs()->error($th->getMessage());
                     logs()->info(json_encode($da));
                     break;
