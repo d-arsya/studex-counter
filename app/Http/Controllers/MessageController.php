@@ -10,7 +10,7 @@ class MessageController extends Controller
 {
     public function today()
     {
-        $messages = Message::with(['contact', 'group', 'replied.contact'])->whereLike('time', now()->toDateString() . '%')->whereNotNull('replied_by')->get();
+        $messages = Message::with(['contact', 'group', 'replied.contact'])->whereLike('time', now()->toDateString() . '%')->whereNotNull('replied_by')->orderBy('time')->get();
 
         $counts = collect();
 
@@ -36,7 +36,7 @@ class MessageController extends Controller
 
         $messages = Message::with(['contact', 'group', 'replied.contact'])
             ->whereBetween('time', [$startOfWeek, $endOfWeek])
-            ->whereNotNull('replied_by')
+            ->whereNotNull('replied_by')->orderBy('time')
             ->get();
 
         $counts = collect();
