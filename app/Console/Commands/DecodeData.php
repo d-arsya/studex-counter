@@ -32,6 +32,7 @@ class DecodeData extends Command
     {
         $data = DB::table('datas')->latest()->pluck('webhookdata');
         $groups = Group::where('is_cust', true)->pluck('identifier')->toArray();
+        $success = true;
         $sw = [];
         foreach ($data as $value) {
             $da = json_decode($value);
@@ -44,25 +45,36 @@ class DecodeData extends Command
                 $contact = Contact::where('identifier', $da->author)->first()->id;
                 $group = Group::where('identifier', $da->from)->first()->id;
                 $exist = Message::where('identifier', $da->id->id)->first();
-                if (!$exist) {
-                    Message::create([
-                        'group_id' => $group,
-                        'contact_id' => $contact,
-                        'text' => $da->body,
-                        'time' => Carbon::createFromTimestamp($da->timestamp)->addHours(7),
-                        'identifier' => $da->id->id,
-                        'is_delivery' => str_contains(strtolower($da->body), 'jastip')
-                    ]);
-                }
-                if ($da->hasQuotedMsg) {
-                    $quoted = Message::where('identifier', $da->_data->quotedStanzaID)->first();
-                    if ($quoted->replied_by == null && strlen($da->body) < 6 && !str_contains(strtolower($da->body), 'm')) {
-                        $quoted->update(['replied_by' => $da->id->id]);
+                try {
+                    if (!$exist) {
+                        Message::create([
+                            'group_id' => $group,
+                            'contact_id' => $contact,
+                            'text' => $da->body,
+                            'time' => Carbon::createFromTimestamp($da->timestamp)->addHours(7),
+                            'identifier' => $da->id->id,
+                            'is_delivery' => str_contains(strtolower($da->body), 'jastip')
+                        ]);
                     }
+                    if ($da->hasQuotedMsg) {
+                        $quoted = Message::where('identifier', $da->_data->quotedStanzaID)->first();
+                        if ($quoted->replied_by == null && strlen($da->body) < 6 && !str_contains(strtolower($da->body), 'm')) {
+                            $quoted->update(['replied_by' => $da->id->id]);
+                        }
+                    }
+                } catch (\Throwable $th) {
+                    if ($success) {
+                        $success = false;
+                    }
+                    logs()->error($th->getMessage());
+                    logs()->info(json_encode($da));
+                    break;
                 }
             }
         }
-        DB::table('datas')->delete();
+        if ($success) {
+            DB::table('datas')->delete();
+        }
         return 0;
     }
 }
