@@ -56,7 +56,7 @@ class DecodeData extends Command
                     }
                     if ($da->hasQuotedMsg) {
                         $quoted = Message::where('identifier', $da->_data->quotedStanzaID)->first();
-                        if ($quoted) {
+                        if (!$quoted) {
                             $quoted = $this->createMessage($da);
                         }
                         if ($quoted->replied_by == null && strlen($da->body) < 6 && !str_contains(strtolower($da->body), 'm')) {
