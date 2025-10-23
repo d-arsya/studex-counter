@@ -67,6 +67,7 @@ class DecodeData extends Command
                     if ($success) {
                         $success = false;
                     }
+                    logs()->error(json_encode($th));
                     logs()->error($th->getMessage());
                     logs()->info(json_encode($da));
                     break;
@@ -89,7 +90,7 @@ class DecodeData extends Command
             'contact_id' => $contact,
             'text' => $da->body,
             'time' => Carbon::createFromTimestamp($da->timestamp)->addHours(7),
-            'identifier' => $da->id->id,
+            'identifier' => $da->_data->quotedStanzaID,
             'is_delivery' => str_contains(strtolower($da->body), 'jastip')
         ]);
         return $data;
